@@ -52,7 +52,7 @@ namespace ChipherLab1Var2
 
         public override string Encrypt() //зашифровка сообщения солбцовым методом
         {
-            string[,] ciphertable = CipherTableCreate(); //Создание таблицы для расшифровки
+            string[,] ciphertable = CipherTableCreate(); //Создание таблицы для зашифровки
             int countlettermess = 0; //количетство букв в сообщении
             bool checkletters = false; //проверка количества букв
             for (int row = 2; row < ciphertable.GetLength(0); row++) //по строкам
@@ -93,20 +93,22 @@ namespace ChipherLab1Var2
             return EncryptedMessage;
         }
 
-        public override string Decrypt()
+        public override string Decrypt() //расшифровка сообщения, зашифрованного столбцовым методом
         {
-            string[,] ciphertable = CipherTableCreate();
+            string[,] ciphertable = CipherTableCreate(); //создание таблицы
+            //количество пустых клеток в конце таблицы
             int countemptycells = (ciphertable.GetLength(0) - 2) * ciphertable.GetLength(1) - Message.Length;
-
-            int lettermessnum = 0;
+            
+            int lettermessnum = 0; //кол-во букв в сообщении
+            //прогонка по нумерации букв ключа
             for (int letterkey = 1; letterkey < key.Length + 1; letterkey++)
-            {
+            {   //по столбцам
                 for (int column = 0; column < ciphertable.GetLength(1); column++)
-                {
+                {   //проверка на соответствие: выбранная нумерация столбца - текущая нумерация букв ключа
                     if (ciphertable[1, column] == Convert.ToString(letterkey))
-                    {
+                    {   //по строкам
                         for (int row = 2; row < ciphertable.GetLength(0); row++)
-                        {
+                        {   //проверка должна ли быть в этом столбце пустая клетка
                             if (row == ciphertable.GetLength(0) - 1 && column > ciphertable.GetLength(1) - countemptycells - 1)
                             {
                                 break;
@@ -119,9 +121,10 @@ namespace ChipherLab1Var2
                 }
             }
 
-            DecryptedMessage = "";
+            DecryptedMessage = ""; //Расшифровка сообщения
+            //по строкам
             for (int row = 2; row < ciphertable.GetLength(0); row++)
-            {
+            {   //по столбцам
                 for (int column = 0; column < ciphertable.GetLength(1); column++)
                 {
                     DecryptedMessage += ciphertable[row, column];
