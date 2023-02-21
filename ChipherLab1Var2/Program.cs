@@ -11,9 +11,18 @@ namespace ChipherLab1Var2
         static void Main(string[] args)
         {
             //Console.WriteLine(Convert.ToChar(Convert.ToString(1)));
+            
+            string message = "перваялабораторнаяработапокиоки";
+            string key = "криптография";
 
-            ColumnCipher ciph = new ColumnCipher("перваялабораторнаяработапокиоки", "криптография");
-            Console.WriteLine(ciph.Encrypt());
+            ColumnCipher ciph = new ColumnCipher(message, key);
+            ciph.Encrypt();
+            Console.WriteLine(ciph.EncryptedMessage);
+
+            ColumnCipher ciphdecrypt = new ColumnCipher(ciph.EncryptedMessage, ciph.Key);
+            ciphdecrypt.Decrypt();
+            Console.WriteLine(ciphdecrypt.DecryptedMessage);
+
             Console.WriteLine("END");
             Console.ReadLine();
         }

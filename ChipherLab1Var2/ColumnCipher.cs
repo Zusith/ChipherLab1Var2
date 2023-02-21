@@ -6,52 +6,60 @@ using System.Threading.Tasks;
 
 namespace ChipherLab1Var2
 {
-    public class ColumnCipher
+    class ColumnCipher : Cipher
     {
-        string Message;
-        string Key;
-        string encryptedmessage;
+        string key; //ключ для шифрования
 
-        public ColumnCipher(string message, string key)
+        public ColumnCipher(string message, string key) //конструктор класса солбцового шифра
+            :base(message) //передаваемое сообщение для шифровки / дешифровки
         {
-            Message = message;
-            Key = key;
+            this.key = key;
         }
 
-        public string Encrypt()
+        public string Key //Свойство ключ, пользователь может менять значение ключа
         {
-            int rowscount = 0;
-            rowscount = (int)Math.Ceiling((double)Message.Length / (double)Key.Length);
- 
-            string[,] ciphertable = new string[2 + rowscount, Key.Length];
+            get { return key; }
+            set { key = value; }
+        }
 
+        private string[,] CipherTableCreate() //Заполнение ключа и расчет нумеровки букв в таблице
+        {
+            int rowscount = 0; //количетсво строк
+            rowscount = (int)Math.Ceiling((double)Message.Length / (double)key.Length);
+
+            string[,] ciphertable = new string[2 + rowscount, key.Length];//таблица для шифровки
+            //Заполнение первой строки таблицы ключом
             for (int column = 0; column < ciphertable.GetLength(1); column++)
             {
-                ciphertable[0, column] = Convert.ToString(Key[column]);
+                ciphertable[0, column] = Convert.ToString(key[column]);
             }
 
-            int countletterkey = 1;
-            for (int letter = 'а'; letter < 'я'; letter++)
+            int countletterkey = 1; //количество букв в ключе
+            for (int letter = 'а'; letter < 'я' + 1; letter++) // прогонка по всем буквам
             {
                 for (int column = 0; column < ciphertable.GetLength(1); column++)
                 {
-                    if (Key[column] == letter)
+                    if (key[column] == letter) //нумеровка столбцов в алфавитном порядке
                     {
-                        
                         ciphertable[1, column] = Convert.ToString(countletterkey);
                         countletterkey++;
                     }
                 }
             }
-            ciphertable[1, ciphertable.GetLength(1) - 1] = Convert.ToString(countletterkey);
 
-            int countlettermess = 0;
-            bool checkletters = false;
-            for (int row = 2; row < ciphertable.GetLength(0); row++)
+            return ciphertable;
+        }
+
+        public override string Encrypt() //зашифровка сообщения солбцовым методом
+        {
+            string[,] ciphertable = CipherTableCreate(); //Создание таблицы для расшифровки
+            int countlettermess = 0; //количетство букв в сообщении
+            bool checkletters = false; //проверка количества букв
+            for (int row = 2; row < ciphertable.GetLength(0); row++) //по строкам
             {
-                for (int column = 0; column < ciphertable.GetLength(1); column++)
+                for (int column = 0; column < ciphertable.GetLength(1); column++) //по столбцам
                 {
-                    if (countlettermess == Message.Length)
+                    if (countlettermess == Message.Length) //проверка на конец сообщения, чтобы не заполнялись пустые клетки
                     {
                         checkletters = true;
                         break;
@@ -59,33 +67,69 @@ namespace ChipherLab1Var2
                     ciphertable[row, column] = Convert.ToString(Message[countlettermess]);
                     countlettermess++;
                 }
-                if (checkletters)
+                if (checkletters) //проверка на заполненность, сообщение закончено
                 {
                     break;
                 }
             }
 
-            encryptedmessage = "";
-            
-            for (int countnumbers = 1; countnumbers != countletterkey + 1; countnumbers++)
-            {
+            EncryptedMessage = ""; //Зашифровка
+            //Прогонка по нумерации букв ключа
+            for (int countnumbers = 1; countnumbers != Key.Length + 1; countnumbers++)
+            {   //по столбцам
                 for (int column = 0; column < ciphertable.GetLength(1); column++)
-                {
+                {   //проверка на соответствие: номер в выбранном столбце - текущая нумерация ключа
                     if (ciphertable[1, column] == Convert.ToString(countnumbers))
-                    {
+                    {   //по строкам
                         for (int row = 2; row < ciphertable.GetLength(0); row++)
                         {
-                            if (ciphertable[row, column] != " ")
-                            {
-                                encryptedmessage += ciphertable[row, column];
-                            }
+                            EncryptedMessage += ciphertable[row, column];
                         }
                         break;
                     }
                 }
             }
             
-            return encryptedmessage;
+            return EncryptedMessage;
+        }
+
+        public override string Decrypt()
+        {
+            string[,] ciphertable = CipherTableCreate();
+            int countemptycells = (ciphertable.GetLength(0) - 2) * ciphertable.GetLength(1) - Message.Length;
+
+            int lettermessnum = 0;
+            for (int letterkey = 1; letterkey < key.Length + 1; letterkey++)
+            {
+                for (int column = 0; column < ciphertable.GetLength(1); column++)
+                {
+                    if (ciphertable[1, column] == Convert.ToString(letterkey))
+                    {
+                        for (int row = 2; row < ciphertable.GetLength(0); row++)
+                        {
+                            if (row == ciphertable.GetLength(0) - 1 && column > ciphertable.GetLength(1) - countemptycells - 1)
+                            {
+                                break;
+                            }
+                            ciphertable[row, column] = Convert.ToString(Message[lettermessnum]);
+                            lettermessnum++;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            DecryptedMessage = "";
+            for (int row = 2; row < ciphertable.GetLength(0); row++)
+            {
+                for (int column = 0; column < ciphertable.GetLength(1); column++)
+                {
+                    DecryptedMessage += ciphertable[row, column];
+                }
+            }
+            
+            
+            return DecryptedMessage;
         }
     }
 }
