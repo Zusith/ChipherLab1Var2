@@ -10,23 +10,48 @@ namespace ChipherLab1Var2
     {
         static void Main(string[] args)
         {
-            //Console.WriteLine(Convert.ToChar(Convert.ToString(1)));
-            
-            string message = "перваялабораторнаяработапокиоки";
+            #region ColumnCipher test
+
+            string message = "первая лабораторная работа по киоки!";
             string key = "криптография";
 
+            Console.WriteLine("Столбцовый метод");
+            Console.WriteLine("Начальное: " + message);
             ColumnCipher ciph = new ColumnCipher(message, key);
             ciph.Encrypt();
-            Console.WriteLine(ciph.EncryptedMessage);
+            Console.WriteLine("Зашифрованное: " + ciph.EncryptedMessage);
 
             ColumnCipher ciphdecrypt = new ColumnCipher(ciph.EncryptedMessage, ciph.Key);
             ciphdecrypt.Decrypt();
-            Console.WriteLine(ciphdecrypt.DecryptedMessage);
+            Console.WriteLine("Расшифрованное: " + ciphdecrypt.DecryptedMessage);
 
+            #endregion
+
+            #region CesarCipher test
+
+            Console.WriteLine("----------------------------------------------------------------");
+            Console.WriteLine("метод Цезаря");
+
+            //message = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя!";
+            message = "курица! привет";
+            int keycesar = 3;
+
+            Console.WriteLine("Начальное: " + message);
+            CesarCipher cesciph = new CesarCipher(message, keycesar);
+            cesciph.Encrypt();
+            Console.WriteLine("Зашифрованное: " + cesciph.EncryptedMessage);
+
+            CesarCipher cesciph2 = new CesarCipher(cesciph.EncryptedMessage, cesciph.Key);
+            cesciph2.Decrypt();
+            Console.WriteLine("Расшифрованное: " + cesciph2.DecryptedMessage);
+
+            Console.WriteLine();
             Console.WriteLine("END");
             Console.ReadLine();
+
+            #endregion
         }
 
-        
+
     }
 }

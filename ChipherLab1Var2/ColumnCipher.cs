@@ -10,16 +10,30 @@ namespace ChipherLab1Var2
     {
         string key; //ключ для шифрования
 
-        public ColumnCipher(string message, string key) //конструктор класса солбцового шифра
+        public ColumnCipher(string message = "", string key = "") //конструктор класса солбцового шифра
             :base(message) //передаваемое сообщение для шифровки / дешифровки
         {
             this.key = key;
+            KeyRecalculation();
         }
 
         public string Key //Свойство ключ, пользователь может менять значение ключа
         {
             get { return key; }
-            set { key = value; }
+            set { key = value; KeyRecalculation(); }
+        }
+
+        private void KeyRecalculation() //перерасчет ключа, если он состоит из нескольких слов
+        {
+            if (key.Contains(" "))
+            {
+                string[] test = key.Split(' ');
+                key = "";
+                for (int num = 0; num < test.Length; num++)
+                {
+                    key += test[num];
+                }
+            }
         }
 
         private string[,] CipherTableCreate() //Заполнение ключа и расчет нумеровки букв в таблице

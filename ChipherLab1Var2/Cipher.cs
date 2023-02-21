@@ -12,7 +12,7 @@ namespace ChipherLab1Var2
         string encryptedmessage = "";
         string decryptedmessage = "";
 
-        public Cipher(string message = "")
+        public Cipher(string message)
         {
             this.message = message;
         }
