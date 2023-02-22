@@ -51,7 +51,5 @@ namespace ChipherLab1Var2
 
             #endregion
         }
-
-
     }
 }
