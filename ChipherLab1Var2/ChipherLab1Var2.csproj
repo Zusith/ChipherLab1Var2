@@ -46,6 +46,7 @@
     <Compile Include="CesarCipher.cs" />
     <Compile Include="Cipher.cs" />
     <Compile Include="ColumnCipher.cs" />
+    <Compile Include="ElGamalCipher.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

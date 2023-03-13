@@ -37,7 +37,5 @@ namespace ChipherLab1Var2
 
         public abstract string Encrypt();
         public abstract string Decrypt();
-
-
     }
 }
